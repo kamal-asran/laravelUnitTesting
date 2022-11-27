@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
@@ -15,6 +16,8 @@ class UsersTest extends TestCase
      */
     public function test_all_users_list()
     {
+        User::factory(10)->create();
+
         $response=$this->withoutDeprecationHandling()->get('/users');
         $response->assertStatus(200);
         $response->dump();        
@@ -25,7 +28,8 @@ class UsersTest extends TestCase
                 'data.0.id' => 'integer'
             ])->where(            //assert against values
                 'data.0.id',1
-            )->hasAll('data','next_page_url')->missing('error')->etc()      //assert against Presence / Absence
+            )
+            ->hasAll('data','next_page_url')->missing('error')->etc()      //assert against Presence / Absence
         );
 
         
